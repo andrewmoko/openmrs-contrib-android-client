@@ -13,9 +13,14 @@ import org.openmrs.mobile.utilities.DateUtils;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class VisitDbService extends BaseEntityDbService<Visit> implements EntityDbService<Visit> {
+	@Inject
+	public VisitDbService() { }
+
 	@Override
 	protected ModelAdapter<Visit> getEntityTable() {
 		return (Visit_Table)FlowManager.getInstanceAdapter(Visit.class);

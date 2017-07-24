@@ -21,7 +21,7 @@ import org.openmrs.mobile.data.db.AppDatabase;
 import java.util.List;
 
 @Table(database = AppDatabase.class)
-public class Concept extends BaseOpenmrsObject {
+public class Concept extends BaseOpenmrsAuditableObject {
 	@SerializedName("datatype")
 	@Expose
 	@ForeignKey

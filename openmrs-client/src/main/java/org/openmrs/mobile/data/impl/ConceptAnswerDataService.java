@@ -17,46 +17,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.openmrs.mobile.data.BaseDataService;
-import org.openmrs.mobile.data.PagingInfo;
 import org.openmrs.mobile.data.QueryOptions;
 import org.openmrs.mobile.data.db.impl.ConceptAnswerDbService;
-import org.openmrs.mobile.data.rest.ConceptAnswerRestService;
+import org.openmrs.mobile.data.rest.impl.ConceptAnswerRestServiceImpl;
 import org.openmrs.mobile.models.ConceptAnswer;
-import org.openmrs.mobile.models.Results;
-import org.openmrs.mobile.utilities.ApplicationConstants;
 
 import java.util.List;
 
-import retrofit2.Call;
+import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ConceptAnswerDataService
-		extends BaseDataService<ConceptAnswer, ConceptAnswerDbService, ConceptAnswerRestService> {
-	@Override
-	protected Class<ConceptAnswerRestService> getRestServiceClass() {
-		return ConceptAnswerRestService.class;
-	}
-
-	@Override
-	protected ConceptAnswerDbService getDbService() {
-		return new ConceptAnswerDbService();
-	}
-
-	@Override
-	protected String getRestPath() {
-		return ApplicationConstants.API.REST_ENDPOINT_V2 + "custom";
-	}
-
-	@Override
-	protected String getEntityName() {
-		return "conceptanswer";
-	}
-
-	@Override
-	protected Call<ConceptAnswer> _restGetByUuid(String restPath, String uuid, QueryOptions options) {
-		return restService.getByUuid(restPath, uuid, QueryOptions.getRepresentation(options));
-	}
+		extends BaseDataService<ConceptAnswer, ConceptAnswerDbService, ConceptAnswerRestServiceImpl> {
+	@Inject
+	public ConceptAnswerDataService() { }
 
 	public void getByConceptUuid(@NonNull String conceptUuid, @Nullable QueryOptions options,
 			@NonNull GetCallback<List<ConceptAnswer>> callback) {
@@ -65,26 +40,6 @@ public class ConceptAnswerDataService
 
 		executeMultipleCallback(callback, options, null,
 				() -> dbService.getByConceptUuid(conceptUuid, options),
-				() -> restService.getByConceptUuid(buildRestRequestPath(), conceptUuid));
-	}
-
-	@Override
-	protected Call<Results<ConceptAnswer>> _restGetAll(String restPath, QueryOptions options, PagingInfo pagingInfo) {
-		return null;
-	}
-
-	@Override
-	protected Call<ConceptAnswer> _restCreate(String restPath, ConceptAnswer entity) {
-		return null;
-	}
-
-	@Override
-	protected Call<ConceptAnswer> _restUpdate(String restPath, ConceptAnswer entity) {
-		return null;
-	}
-
-	@Override
-	protected Call<ConceptAnswer> _restPurge(String restPath, String uuid) {
-		return null;
+				() -> restService.getByConceptUuid(conceptUuid, options));
 	}
 }

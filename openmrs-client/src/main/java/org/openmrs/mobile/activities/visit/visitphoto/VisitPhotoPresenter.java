@@ -14,8 +14,6 @@
 
 package org.openmrs.mobile.activities.visit.visitphoto;
 
-import android.graphics.Bitmap;
-
 import org.openmrs.mobile.activities.visit.VisitContract;
 import org.openmrs.mobile.activities.visit.VisitPresenterImpl;
 import org.openmrs.mobile.data.DataService;
@@ -52,8 +50,9 @@ public class VisitPhotoPresenter extends VisitPresenterImpl implements VisitCont
 		this.patientUuid = patientUuid;
 		this.visitUuid = visitUuid;
 		this.providerUuid = providerUuid;
-		this.visitPhotoDataService = new VisitPhotoDataService();
-		this.obsDataService = new ObsDataService();
+
+		this.visitPhotoDataService = dataAccess().visitPhoto();
+		this.obsDataService = dataAccess().obs();
 	}
 
 	private void loadVisitDocumentObservations() {

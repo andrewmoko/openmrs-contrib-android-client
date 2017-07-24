@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Results<T> implements Serializable {
+	public Results() { }
+
+	public Results(List<T> results) {
+		this.results = results;
+	}
 
 	@SerializedName("results")
 	@Expose

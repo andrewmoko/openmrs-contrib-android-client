@@ -8,7 +8,11 @@ import org.openmrs.mobile.data.db.MetadataDbService;
 import org.openmrs.mobile.models.VisitType;
 import org.openmrs.mobile.models.VisitType_Table;
 
+import javax.inject.Inject;
+
 public class VisitTypeDbService extends BaseMetadataDbService<VisitType> implements MetadataDbService<VisitType> {
+	@Inject
+	public VisitTypeDbService() { }
 
 	@Override
 	protected ModelAdapter<VisitType> getEntityTable() {

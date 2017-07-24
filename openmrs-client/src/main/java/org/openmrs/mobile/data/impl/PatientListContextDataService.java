@@ -18,70 +18,23 @@ import org.openmrs.mobile.data.DataService;
 import org.openmrs.mobile.data.PagingInfo;
 import org.openmrs.mobile.data.QueryOptions;
 import org.openmrs.mobile.data.db.impl.PatientListContextDbService;
-import org.openmrs.mobile.data.rest.PatientListContextRestService;
+import org.openmrs.mobile.data.rest.impl.PatientListContextRestServiceImpl;
 import org.openmrs.mobile.models.PatientListContext;
-import org.openmrs.mobile.models.Results;
-import org.openmrs.mobile.utilities.ApplicationConstants;
 
 import java.util.List;
 
-import retrofit2.Call;
+import javax.inject.Inject;
 
 public class PatientListContextDataService
-		extends BaseDataService<PatientListContext, PatientListContextDbService, PatientListContextRestService>
+		extends BaseDataService<PatientListContext, PatientListContextDbService, PatientListContextRestServiceImpl>
 		implements DataService<PatientListContext> {
-
-	@Override
-	protected Class<PatientListContextRestService> getRestServiceClass() {
-		return PatientListContextRestService.class;
-	}
-
-	@Override
-	protected PatientListContextDbService getDbService() {
-		return new PatientListContextDbService();
-	}
-
-	@Override
-	protected String getRestPath() {
-		return ApplicationConstants.API.REST_ENDPOINT_V2;
-	}
-
-	@Override
-	protected String getEntityName() {
-		return "patientlist/data";
-	}
+	@Inject
+	public PatientListContextDataService() { }
 
 	public void getListPatients(String patientListUuid, QueryOptions options, PagingInfo pagingInfo,
 			GetCallback<List<PatientListContext>> callback) {
 		executeMultipleCallback(callback, options, pagingInfo,
 				() -> dbService.getListPatients(patientListUuid, options, pagingInfo),
-				() -> restService.getAll(buildRestRequestPath(), patientListUuid,
-						QueryOptions.getRepresentation(options), QueryOptions.getIncludeInactive(options),
-						PagingInfo.getLimit(pagingInfo), PagingInfo.getStartIndex(pagingInfo)));
-	}
-
-	@Override
-	protected Call<PatientListContext> _restGetByUuid(String restPath, String uuid, QueryOptions options) {
-		return null;
-	}
-
-	@Override
-	protected Call<Results<PatientListContext>> _restGetAll(String restPath, QueryOptions options, PagingInfo pagingInfo) {
-		return null;
-	}
-
-	@Override
-	protected Call<PatientListContext> _restCreate(String restPath, PatientListContext entity) {
-		return null;
-	}
-
-	@Override
-	protected Call<PatientListContext> _restUpdate(String restPath, PatientListContext entity) {
-		return null;
-	}
-
-	@Override
-	protected Call<PatientListContext> _restPurge(String restPath, String uuid) {
-		return null;
+				() -> restService.getListPatients(patientListUuid, options, pagingInfo));
 	}
 }

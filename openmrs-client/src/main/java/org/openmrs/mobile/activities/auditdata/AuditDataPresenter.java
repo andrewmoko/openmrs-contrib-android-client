@@ -19,33 +19,27 @@ import org.openmrs.mobile.data.DataService;
 import org.openmrs.mobile.data.QueryOptions;
 import org.openmrs.mobile.data.impl.ConceptDataService;
 import org.openmrs.mobile.data.impl.EncounterDataService;
-import org.openmrs.mobile.data.impl.LocationDataService;
-import org.openmrs.mobile.data.impl.PatientDataService;
 import org.openmrs.mobile.data.impl.VisitDataService;
 import org.openmrs.mobile.models.Concept;
 import org.openmrs.mobile.models.Encounter;
-import org.openmrs.mobile.models.Patient;
 import org.openmrs.mobile.models.Visit;
 import org.openmrs.mobile.utilities.ApplicationConstants;
 
 public class AuditDataPresenter extends BasePresenter implements AuditDataContract.Presenter {
 
 	private AuditDataContract.View auditDataView;
-	private DataService<Patient> patientDataService;
 	private VisitDataService visitDataService;
 	private ConceptDataService conceptDataService;
 
 	private EncounterDataService encounterDataService;
-	private LocationDataService locationDataService;
 
 	public AuditDataPresenter(AuditDataContract.View view) {
 		this.auditDataView = view;
 		this.auditDataView.setPresenter(this);
-		this.patientDataService = new PatientDataService();
-		this.visitDataService = new VisitDataService();
-		this.encounterDataService = new EncounterDataService();
-		this.locationDataService = new LocationDataService();
-		this.conceptDataService = new ConceptDataService();
+
+		this.visitDataService = dataAccess().visit();
+		this.encounterDataService = dataAccess().encounter();
+		this.conceptDataService = dataAccess().concept();
 	}
 
 	@Override
@@ -70,7 +64,7 @@ public class AuditDataPresenter extends BasePresenter implements AuditDataContra
 				t.printStackTrace();
 			}
 		};
-		conceptDataService.getByUUID(ApplicationConstants.AuditFormConcepts.CONCEPT_INPATIENT_SERVICE_TYPE, QueryOptions
+		conceptDataService.getByUuid(ApplicationConstants.AuditFormConcepts.CONCEPT_INPATIENT_SERVICE_TYPE, QueryOptions
 				.LOAD_RELATED_OBJECTS, conceptGetCallback);
 	}
 
@@ -96,7 +90,7 @@ public class AuditDataPresenter extends BasePresenter implements AuditDataContra
 				t.printStackTrace();
 			}
 		};
-		visitDataService.getByUUID(visitUuid, QueryOptions.LOAD_RELATED_OBJECTS, fetchEncountersCallback);
+		visitDataService.getByUuid(visitUuid, QueryOptions.LOAD_RELATED_OBJECTS, fetchEncountersCallback);
 	}
 
 	private void fetchEncounter(String uuid) {
@@ -115,7 +109,7 @@ public class AuditDataPresenter extends BasePresenter implements AuditDataContra
 				t.printStackTrace();
 			}
 		};
-		encounterDataService.getByUUID(uuid, QueryOptions.LOAD_RELATED_OBJECTS, fetchEncountercallback);
+		encounterDataService.getByUuid(uuid, QueryOptions.LOAD_RELATED_OBJECTS, fetchEncountercallback);
 	}
 
 	@Override

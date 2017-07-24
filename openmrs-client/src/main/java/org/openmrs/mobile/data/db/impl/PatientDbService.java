@@ -21,9 +21,14 @@ import org.openmrs.mobile.models.PersonName_Table;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PatientDbService extends BaseDbService<Patient> implements DbService<Patient> {
+	@Inject
+	public PatientDbService() { }
+
 	@Override
 	protected ModelAdapter<Patient> getEntityTable() {
 		return (Patient_Table)FlowManager.getInstanceAdapter(Patient.class);

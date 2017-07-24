@@ -49,9 +49,9 @@
 
     <target name="-set-build-version" if="isReleaseTarget">
         <replaceregexp
-            file="AndroidManifest.xml"
-            match='android:name="buildVersion" android:value="(\d+)"'
-            replace='android:name="buildVersion" android:value="${git.commits}"' />
+                file="AndroidManifest.xml"
+                match='android:name="buildVersion" android:value="(\d+)"'
+                replace='android:name="buildVersion" android:value="${git.commits}"' />
     </target>
 
     <target name="-pre-compile" depends="checkstyle, pmd"/>
@@ -76,6 +76,6 @@
 
     <target name="demoVersion">
         <replaceregexp file="${src.dir}/org/openmrs/mobile/utilities/ApplicationConstants.java" match='DEFAULT_OPEN_MRS_URL = EMPTY_STRING'
-                       replace='DEFAULT_OPEN_MRS_URL = "http://devtest04.openmrs.org:8080/openmrs"' />
+                replace='DEFAULT_OPEN_MRS_URL = "http://devtest04.openmrs.org:8080/openmrs"' />
     </target>
 </project>

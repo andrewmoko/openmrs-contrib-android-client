@@ -8,7 +8,11 @@ import org.openmrs.mobile.data.db.MetadataDbService;
 import org.openmrs.mobile.models.PatientList;
 import org.openmrs.mobile.models.PatientList_Table;
 
+import javax.inject.Inject;
+
 public class PatientListDbService extends BaseMetadataDbService<PatientList> implements MetadataDbService<PatientList> {
+	@Inject
+	public PatientListDbService() { }
 
 	@Override
 	protected ModelAdapter<PatientList> getEntityTable() {

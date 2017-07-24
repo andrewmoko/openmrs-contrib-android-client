@@ -8,8 +8,12 @@ import org.openmrs.mobile.data.db.MetadataDbService;
 import org.openmrs.mobile.models.VisitPredefinedTask;
 import org.openmrs.mobile.models.VisitPredefinedTask_Table;
 
+import javax.inject.Inject;
+
 public class VisitPredefinedTaskDbService extends BaseMetadataDbService<VisitPredefinedTask>
 		implements MetadataDbService<VisitPredefinedTask> {
+	@Inject
+	public VisitPredefinedTaskDbService() { }
 
 	@Override
 	protected ModelAdapter<VisitPredefinedTask> getEntityTable() {

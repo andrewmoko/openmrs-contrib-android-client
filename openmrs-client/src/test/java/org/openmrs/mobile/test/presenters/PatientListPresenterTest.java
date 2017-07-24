@@ -15,6 +15,7 @@ package org.openmrs.mobile.test.presenters;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -48,7 +49,9 @@ public class PatientListPresenterTest extends ACUnitTestBase {
 	private PatientListContextDataService patientListContextDataService;
 	@Mock
 	private PatientListContract.View view;
+
 	private PatientListPresenter presenter;
+
 	private List<PatientList> patientLists = new ArrayList<>();
 	private List<PatientListContext> patientListData;
 	private PagingInfo pagingInfo;

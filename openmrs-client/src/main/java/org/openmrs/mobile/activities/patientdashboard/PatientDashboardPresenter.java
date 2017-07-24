@@ -50,10 +50,11 @@ public class PatientDashboardPresenter extends BasePresenter implements PatientD
 	public PatientDashboardPresenter(PatientDashboardContract.View view) {
 		this.patientDashboardView = view;
 		this.patientDashboardView.setPresenter(this);
-		this.patientDataService = new PatientDataService();
-		this.visitDataService = new VisitDataService();
-		this.providerDataService = new ProviderDataService();
-		this.locationDataService = new LocationDataService();
+
+		this.patientDataService = dataAccess().patient();
+		this.visitDataService = dataAccess().visit();
+		this.providerDataService = dataAccess().provider();
+		this.locationDataService = dataAccess().location();
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class PatientDashboardPresenter extends BasePresenter implements PatientD
 	@Override
 	public void fetchPatientData(String uuid) {
 		patientDashboardView.showPageSpinner(true);
-		patientDataService.getByUUID(uuid, QueryOptions.LOAD_RELATED_OBJECTS, new DataService.GetCallback<Patient>() {
+		patientDataService.getByUuid(uuid, QueryOptions.LOAD_RELATED_OBJECTS, new DataService.GetCallback<Patient>() {
 			@Override
 			public void onCompleted(Patient patient) {
 				setPatient(patient);
@@ -169,7 +170,7 @@ public class PatientDashboardPresenter extends BasePresenter implements PatientD
 				}
 			};
 
-			locationDataService.getByUUID(locationUuid, QueryOptions.LOAD_RELATED_OBJECTS, locationDataServiceCallback);
+			locationDataService.getByUuid(locationUuid, QueryOptions.LOAD_RELATED_OBJECTS, locationDataServiceCallback);
 		}
 
 	}

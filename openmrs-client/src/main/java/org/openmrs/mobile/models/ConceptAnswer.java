@@ -22,7 +22,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.openmrs.mobile.data.db.AppDatabase;
 
 @Table(database = AppDatabase.class)
-public class ConceptAnswer extends BaseOpenmrsObject {
+public class ConceptAnswer extends BaseOpenmrsAuditableObject {
 	/**
 	 * The question concept that this object is answering
 	 */

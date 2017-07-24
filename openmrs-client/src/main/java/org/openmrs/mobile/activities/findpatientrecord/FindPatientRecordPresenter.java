@@ -39,13 +39,15 @@ public class FindPatientRecordPresenter extends BasePresenter implements FindPat
 	public FindPatientRecordPresenter(@NonNull FindPatientRecordContract.View view, String lastQuery) {
 		this.findPatientView = view;
 		this.findPatientView.setPresenter(this);
-		this.patientDataService = new PatientDataService();
+
+		this.patientDataService = dataAccess().patient();
 	}
 
 	public FindPatientRecordPresenter(@NonNull FindPatientRecordContract.View view) {
 		this.findPatientView = view;
 		this.findPatientView.setPresenter(this);
-		this.patientDataService = new PatientDataService();
+
+		this.patientDataService = dataAccess().patient();
 	}
 
 	@Override

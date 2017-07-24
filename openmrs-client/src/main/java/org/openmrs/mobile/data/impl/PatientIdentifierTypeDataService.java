@@ -11,78 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.mobile.data.impl;
 
 import org.openmrs.mobile.data.BaseMetadataDataService;
 import org.openmrs.mobile.data.MetadataDataService;
-import org.openmrs.mobile.data.PagingInfo;
-import org.openmrs.mobile.data.QueryOptions;
 import org.openmrs.mobile.data.db.impl.PatientIdentifierTypeDbService;
-import org.openmrs.mobile.data.rest.PatientIdentifierTypeRestService;
+import org.openmrs.mobile.data.rest.impl.PatientIdentifierTypeRestServiceImpl;
 import org.openmrs.mobile.models.PatientIdentifierType;
-import org.openmrs.mobile.models.Results;
-import org.openmrs.mobile.utilities.ApplicationConstants;
 
-import retrofit2.Call;
+import javax.inject.Inject;
 
-public class PatientIdentifierTypeDataService
-		extends
-		BaseMetadataDataService<PatientIdentifierType, PatientIdentifierTypeDbService, PatientIdentifierTypeRestService>
+public class PatientIdentifierTypeDataService extends
+		BaseMetadataDataService<PatientIdentifierType, PatientIdentifierTypeDbService, PatientIdentifierTypeRestServiceImpl>
 		implements MetadataDataService<PatientIdentifierType> {
-	@Override
-	protected Class<PatientIdentifierTypeRestService> getRestServiceClass() {
-		return PatientIdentifierTypeRestService.class;
-	}
-
-	@Override
-	protected PatientIdentifierTypeDbService getDbService() {
-		return new PatientIdentifierTypeDbService();
-	}
-
-	@Override
-	protected String getRestPath() {
-		return ApplicationConstants.API.REST_ENDPOINT_V1;
-	}
-
-	@Override
-	protected String getEntityName() {
-		return "patientidentifiertype";
-	}
-
-	@Override
-	protected Call<Results<PatientIdentifierType>> _restGetByNameFragment(String restPath, String name,
-			QueryOptions options, PagingInfo pagingInfo) {
-		return restService.getByNameFragment(restPath, name, QueryOptions.getRepresentation(options),
-				QueryOptions.getIncludeInactive(options),
-				PagingInfo.getLimit(pagingInfo), PagingInfo.getStartIndex(pagingInfo));
-	}
-
-	@Override
-	protected Call<PatientIdentifierType> _restGetByUuid(String restPath, String uuid, QueryOptions options) {
-		return restService.getByUuid(restPath, uuid, QueryOptions.getRepresentation(options));
-	}
-
-	@Override
-	protected Call<Results<PatientIdentifierType>> _restGetAll(String restPath, QueryOptions options,
-			PagingInfo pagingInfo) {
-		return restService.getAll(restPath, QueryOptions.getRepresentation(options),
-				QueryOptions.getIncludeInactive(options),
-				PagingInfo.getLimit(pagingInfo), PagingInfo.getStartIndex(pagingInfo));
-	}
-
-	@Override
-	protected Call<PatientIdentifierType> _restCreate(String restPath, PatientIdentifierType entity) {
-		return null;
-	}
-
-	@Override
-	protected Call<PatientIdentifierType> _restUpdate(String restPath, PatientIdentifierType entity) {
-		return null;
-	}
-
-	@Override
-	protected Call<PatientIdentifierType> _restPurge(String restPath, String uuid) {
-		return null;
-	}
+	@Inject
+	public PatientIdentifierTypeDataService() { }
 }

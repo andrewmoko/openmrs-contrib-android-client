@@ -8,7 +8,12 @@ import org.openmrs.mobile.data.db.DbService;
 import org.openmrs.mobile.models.VisitNote;
 import org.openmrs.mobile.models.VisitNote_Table;
 
+import javax.inject.Inject;
+
 public class VisitNoteDbService extends BaseDbService<VisitNote> implements DbService<VisitNote> {
+	@Inject
+	public VisitNoteDbService() { }
+
 	@Override
 	protected ModelAdapter<VisitNote> getEntityTable() {
 		return (VisitNote_Table)FlowManager.getInstanceAdapter(VisitNote.class);

@@ -8,7 +8,12 @@ import org.openmrs.mobile.data.db.MetadataDbService;
 import org.openmrs.mobile.models.Session;
 import org.openmrs.mobile.models.Session_Table;
 
+import javax.inject.Inject;
+
 public class SessionDbService extends BaseMetadataDbService<Session> implements MetadataDbService<Session> {
+	@Inject
+	public SessionDbService() { }
+
 	@Override
 	protected ModelAdapter<Session> getEntityTable() {
 		return (Session_Table)FlowManager.getInstanceAdapter(Session.class);

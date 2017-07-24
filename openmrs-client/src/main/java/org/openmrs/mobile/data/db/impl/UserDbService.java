@@ -12,7 +12,12 @@ import org.openmrs.mobile.models.User_Table;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class UserDbService extends BaseDbService<User> implements DbService<User> {
+	@Inject
+	public UserDbService() { }
+
 	@Override
 	protected ModelAdapter<User> getEntityTable() {
 		return (User_Table)FlowManager.getInstanceAdapter(User.class);

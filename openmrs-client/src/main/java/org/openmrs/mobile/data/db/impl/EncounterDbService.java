@@ -13,7 +13,12 @@ import org.openmrs.mobile.models.Observation;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class EncounterDbService extends BaseDbService<Encounter> implements DbService<Encounter> {
+	@Inject
+	public EncounterDbService() { }
+
 	@Override
 	protected ModelAdapter<Encounter> getEntityTable() {
 		return (Encounter_Table)FlowManager.getInstanceAdapter(Encounter.class);

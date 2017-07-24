@@ -46,11 +46,12 @@ public class VisitTasksPresenter extends VisitPresenterImpl implements VisitCont
 	public VisitTasksPresenter(String patientUuid, String visitUuid, VisitContract.VisitTasksView visitTasksView) {
 		this.visitTasksView = visitTasksView;
 		this.visitTasksView.setPresenter(this);
-		this.visitPredefinedTaskDataService = new VisitPredefinedTaskDataService();
-		this.visitTaskDataService = new VisitTaskDataService();
-		this.visitDataService = new VisitDataService();
 		this.visitUUID = visitUuid;
 		this.patientUUID = patientUuid;
+
+		this.visitPredefinedTaskDataService = dataAccess().visitPredefinedTask();
+		this.visitTaskDataService = dataAccess().visitTask();
+		this.visitDataService = dataAccess().visit();
 	}
 
 	@Override
@@ -200,6 +201,6 @@ public class VisitTasksPresenter extends VisitPresenterImpl implements VisitCont
 										.fetchErrorMessage, ToastUtil.ToastType.ERROR);
 					}
 				};
-		visitDataService.getByUUID(visitUUID, QueryOptions.LOAD_RELATED_OBJECTS, getSingleCallback);
+		visitDataService.getByUuid(visitUUID, QueryOptions.LOAD_RELATED_OBJECTS, getSingleCallback);
 	}
 }

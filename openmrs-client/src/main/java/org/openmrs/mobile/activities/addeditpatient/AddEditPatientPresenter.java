@@ -22,7 +22,6 @@ import org.openmrs.mobile.application.OpenMRS;
 import org.openmrs.mobile.data.DataService;
 import org.openmrs.mobile.data.PagingInfo;
 import org.openmrs.mobile.data.QueryOptions;
-import org.openmrs.mobile.data.impl.ConceptAnswerDataService;
 import org.openmrs.mobile.data.impl.ConceptDataService;
 import org.openmrs.mobile.data.impl.LocationDataService;
 import org.openmrs.mobile.data.impl.PatientDataService;
@@ -49,7 +48,6 @@ public class AddEditPatientPresenter extends BasePresenter implements AddEditPat
 	private ConceptDataService conceptDataService;
 	private PersonAttributeTypeDataService personAttributeTypeDataService;
 	private PatientIdentifierTypeDataService patientIdentifierTypeDataService;
-	private ConceptAnswerDataService conceptAnswerDataService;
 	private LocationDataService locationDataService;
 	private Patient patient;
 	private String patientToUpdateUuid;
@@ -62,34 +60,28 @@ public class AddEditPatientPresenter extends BasePresenter implements AddEditPat
 	private int page = 0;
 	private int limit = 10;
 
-	public AddEditPatientPresenter(AddEditPatientContract.View patientRegistrationView,
-			List<String> countries,
+	public AddEditPatientPresenter(AddEditPatientContract.View patientRegistrationView, List<String> counties,
 			String patientToUpdateUuid) {
-		this.patientRegistrationView = patientRegistrationView;
-		this.patientRegistrationView.setPresenter(this);
-		this.mCounties = countries;
-		this.patientToUpdateUuid = patientToUpdateUuid;
-		this.patientDataService = new PatientDataService();
-		this.conceptDataService = new ConceptDataService();
-		this.patientIdentifierTypeDataService = new PatientIdentifierTypeDataService();
-		this.personAttributeTypeDataService = new PersonAttributeTypeDataService();
-		this.conceptAnswerDataService = new ConceptAnswerDataService();
-		this.locationDataService = new LocationDataService();
+		this(patientRegistrationView, counties, patientToUpdateUuid, null);
 	}
 
-	public AddEditPatientPresenter(AddEditPatientContract.View patientRegistrationView, Patient mPatient,
-			String patientToUpdateId, List<String> mCounties) {
+	public AddEditPatientPresenter(AddEditPatientContract.View patientRegistrationView, List<String> counties,
+			String patientToUpdateUuid, Patient patient) {
+		super();
+
+		this.patientDataService = dataAccess().patient();
+		this.conceptDataService = dataAccess().concept();
+		this.patientIdentifierTypeDataService = dataAccess().patientIdentifierType();
+		this.personAttributeTypeDataService = dataAccess().personAttributeType();
+		this.locationDataService = dataAccess().location();
+
 		this.patientRegistrationView = patientRegistrationView;
-		this.patientDataService = new PatientDataService();
-		this.conceptDataService = new ConceptDataService();
-		this.patient = mPatient;
-		this.patientToUpdateUuid = patientToUpdateId;
-		this.mCounties = mCounties;
 		this.patientRegistrationView.setPresenter(this);
-		this.patientIdentifierTypeDataService = new PatientIdentifierTypeDataService();
-		this.personAttributeTypeDataService = new PersonAttributeTypeDataService();
-		this.conceptAnswerDataService = new ConceptAnswerDataService();
-		this.locationDataService = new LocationDataService();
+		this.mCounties = counties;
+		this.patient = patient;
+		this.patientToUpdateUuid = patientToUpdateUuid;
+		this.mCounties = counties;
+
 	}
 
 	private boolean validate(Patient patient) {
@@ -195,7 +187,7 @@ public class AddEditPatientPresenter extends BasePresenter implements AddEditPat
 			}
 		};
 		//Just check if the identifier are the same. If not it saves the patient.
-		patientDataService.getByUUID(patientToUpdateUuid, new QueryOptions(false, true), singleCallback);
+		patientDataService.getByUuid(patientToUpdateUuid, new QueryOptions(false, true), singleCallback);
 	}
 
 	@Override
@@ -282,7 +274,7 @@ public class AddEditPatientPresenter extends BasePresenter implements AddEditPat
 
 	@Override
 	public void getConceptAnswer(String uuid, Spinner dropdown) {
-		conceptDataService.getByUUID(uuid, QueryOptions.LOAD_RELATED_OBJECTS, new DataService.GetCallback<Concept>() {
+		conceptDataService.getByUuid(uuid, QueryOptions.LOAD_RELATED_OBJECTS, new DataService.GetCallback<Concept>() {
 			@Override
 			public void onCompleted(Concept concept) {
 				if (concept != null) {
@@ -392,7 +384,7 @@ public class AddEditPatientPresenter extends BasePresenter implements AddEditPat
 										.toastMessages.fetchErrorMessage, ToastUtil.ToastType.ERROR);
 					}
 				};
-		locationDataService.getByUUID(locationUuid, QueryOptions.LOAD_RELATED_OBJECTS, getSingleCallback);
+		locationDataService.getByUuid(locationUuid, QueryOptions.LOAD_RELATED_OBJECTS, getSingleCallback);
 	}
 
 	@Override

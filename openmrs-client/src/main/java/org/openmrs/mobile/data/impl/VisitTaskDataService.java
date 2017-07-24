@@ -18,77 +18,24 @@ import org.openmrs.mobile.data.EntityDataService;
 import org.openmrs.mobile.data.PagingInfo;
 import org.openmrs.mobile.data.QueryOptions;
 import org.openmrs.mobile.data.db.impl.VisitTaskDbService;
-import org.openmrs.mobile.data.rest.VisitTasksRestService;
-import org.openmrs.mobile.models.Results;
+import org.openmrs.mobile.data.rest.impl.VisitTaskRestServiceImpl;
 import org.openmrs.mobile.models.VisitTask;
-import org.openmrs.mobile.utilities.ApplicationConstants;
 
 import java.util.List;
 
-import retrofit2.Call;
+import javax.inject.Inject;
 
 public class VisitTaskDataService
-		extends BaseEntityDataService<VisitTask, VisitTaskDbService, VisitTasksRestService>
+		extends BaseEntityDataService<VisitTask, VisitTaskDbService, VisitTaskRestServiceImpl>
 		implements EntityDataService<VisitTask> {
-
-	@Override
-	protected Class<VisitTasksRestService> getRestServiceClass() {
-		return VisitTasksRestService.class;
-	}
-
-	@Override
-	protected VisitTaskDbService getDbService() {
-		return new VisitTaskDbService();
-	}
-
-	@Override
-	protected String getRestPath() {
-		return ApplicationConstants.API.REST_ENDPOINT_V2;
-	}
-
-	@Override
-	protected String getEntityName() {
-		return "visittasks/task";
-	}
-
-	@Override
-	protected Call<VisitTask> _restGetByUuid(String restPath, String uuid, QueryOptions options) {
-		return restService.getByUuid(restPath, uuid, QueryOptions.getRepresentation(options));
-	}
-
-	@Override
-	protected Call<Results<VisitTask>> _restGetAll(String restPath, QueryOptions options, PagingInfo pagingInfo) {
-		return null;
-	}
-
-	@Override
-	protected Call<VisitTask> _restCreate(String restPath, VisitTask entity) {
-		return restService.create(restPath, entity);
-	}
-
-	@Override
-	protected Call<VisitTask> _restUpdate(String restPath, VisitTask entity) {
-		return restService.update(restPath, entity.getUuid(), entity);
-	}
-
-	@Override
-	protected Call<VisitTask> _restPurge(String restPath, String uuid) {
-		return restService.purge(restPath, uuid);
-	}
-
-	@Override
-	protected Call<Results<VisitTask>> _restGetByPatient(String restPath, String patientUuid, QueryOptions options,
-			PagingInfo pagingInfo) {
-		return null;
-	}
+	@Inject
+	public VisitTaskDataService() { }
 
 	public void getAll(String status, String patient_uuid, String visit_uuid,
 			QueryOptions options, PagingInfo pagingInfo, GetCallback<List<VisitTask>> callback) {
 		executeMultipleCallback(callback, options, pagingInfo,
 				() -> dbService.getAll(status, patient_uuid, visit_uuid, options, pagingInfo),
-				() -> restService.getAll(buildRestRequestPath(), status, patient_uuid, visit_uuid,
-						QueryOptions.getRepresentation(options), QueryOptions.getIncludeInactive(options),
-						PagingInfo.getLimit(pagingInfo), PagingInfo.getStartIndex(pagingInfo))
+				() -> restService.getAll(status, patient_uuid, visit_uuid, options, pagingInfo)
 		);
 	}
 

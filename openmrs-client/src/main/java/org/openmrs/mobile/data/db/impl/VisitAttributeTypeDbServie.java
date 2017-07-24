@@ -8,7 +8,11 @@ import org.openmrs.mobile.data.db.DbService;
 import org.openmrs.mobile.models.VisitAttributeType;
 import org.openmrs.mobile.models.VisitAttributeType_Table;
 
+import javax.inject.Inject;
+
 public class VisitAttributeTypeDbServie extends BaseDbService<VisitAttributeType> implements DbService<VisitAttributeType> {
+	@Inject
+	public VisitAttributeTypeDbServie() { }
 
 	@Override
 	protected ModelAdapter<VisitAttributeType> getEntityTable() {

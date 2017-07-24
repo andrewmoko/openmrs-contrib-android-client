@@ -16,13 +16,14 @@ public class PatientHeaderPresenter extends BasePresenter implements PatientHead
 		this.patientHeaderView = view;
 		this.patientHeaderView.setPresenter(this);
 		this.patientUuid = patientUuid;
-		this.patientDataService = new PatientDataService();
+
+		this.patientDataService = dataAccess().patient();
 	}
 
 	@Override
 	public void getPatient() {
 		patientHeaderView.holdHeader(true);
-		patientDataService.getByUUID(patientUuid, QueryOptions.LOAD_RELATED_OBJECTS, new DataService.GetCallback<Patient>
+		patientDataService.getByUuid(patientUuid, QueryOptions.LOAD_RELATED_OBJECTS, new DataService.GetCallback<Patient>
 				() {
 			@Override
 			public void onCompleted(Patient patient) {

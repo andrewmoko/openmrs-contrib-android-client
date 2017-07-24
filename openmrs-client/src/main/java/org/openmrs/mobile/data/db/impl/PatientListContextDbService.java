@@ -13,8 +13,13 @@ import org.openmrs.mobile.models.PatientListContext_Table;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class PatientListContextDbService extends BaseDbService<PatientListContext>
 		implements DbService<PatientListContext> {
+	@Inject
+	public PatientListContextDbService() { }
+
 	@Override
 	protected ModelAdapter<PatientListContext> getEntityTable() {
 		return (PatientListContext_Table)FlowManager.getInstanceAdapter(PatientListContext.class);

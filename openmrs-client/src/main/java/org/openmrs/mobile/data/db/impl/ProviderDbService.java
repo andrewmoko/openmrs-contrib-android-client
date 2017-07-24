@@ -8,7 +8,11 @@ import org.openmrs.mobile.data.db.MetadataDbService;
 import org.openmrs.mobile.models.Provider;
 import org.openmrs.mobile.models.Provider_Table;
 
+import javax.inject.Inject;
+
 public class ProviderDbService extends BaseMetadataDbService<Provider> implements MetadataDbService<Provider> {
+	@Inject
+	public ProviderDbService() { }
 
 	@Override
 	protected ModelAdapter<Provider> getEntityTable() {

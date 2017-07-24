@@ -8,11 +8,9 @@ import android.util.Log;
 
 import com.google.common.base.Supplier;
 
-import org.openmrs.mobile.application.OpenMRS;
 import org.openmrs.mobile.data.cache.CacheService;
-import org.openmrs.mobile.data.cache.SimpleCacheService;
 import org.openmrs.mobile.data.db.BaseDbService;
-import org.openmrs.mobile.data.rest.RestServiceBuilder;
+import org.openmrs.mobile.data.rest.BaseRestService;
 import org.openmrs.mobile.models.BaseOpenmrsObject;
 import org.openmrs.mobile.models.Resource;
 import org.openmrs.mobile.models.Results;
@@ -25,84 +23,46 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.app.PendingIntent.getActivity;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class BaseDataService<E extends BaseOpenmrsObject, DS extends BaseDbService<E>, RS>
-		implements DataService<E> {
+public abstract class BaseDataService<E extends BaseOpenmrsObject, DS extends BaseDbService<E>,
+			RS extends BaseRestService<E, ?>> implements DataService<E> {
 	public static final String TAG = "BaseDataService";
 
 	/**
 	 * The database service for this entity.
 	 */
+	@Inject
 	protected DS dbService;
 
 	/**
 	 * The REST service for this entity.
 	 */
+	@Inject
 	protected RS restService;
 
+	/**
+	 * The global caching service
+	 */
+	@Inject
 	protected CacheService cacheService;
 
 	private Class<E> entityClass;
 
-	protected BaseDataService() {
-		dbService = getDbService();
-		restService = RestServiceBuilder.createService(getRestServiceClass());
-		cacheService = SimpleCacheService.getInstance();
-	}
-
-	protected abstract DS getDbService();
-
-	/**
-	 * Gets the rest service class defined by the implementing class.
-	 * @return The rest service class
-	 */
-	protected abstract Class<RS> getRestServiceClass();
-
-	/**
-	 * Gets the rest path for the specific entity.
-	 * @return The rest path
-	 */
-	protected abstract String getRestPath();
-
-	/**
-	 * Gets the entity name used for rest calls for the specific entity.
-	 * @return The entity name
-	 */
-	protected abstract String getEntityName();
-
-	protected abstract Call<E> _restGetByUuid(String restPath, String uuid, QueryOptions options);
-
-	protected abstract Call<Results<E>> _restGetAll(String restPath, QueryOptions options, PagingInfo pagingInfo);
-
-	protected abstract Call<E> _restCreate(String restPath, E entity);
-
-	protected abstract Call<E> _restUpdate(String restPath, E entity);
-
-	protected abstract Call<E> _restPurge(String restPath, String uuid);
-
 	@Override
-	public void getByUUID(@NonNull String uuid, @Nullable QueryOptions options, @NonNull GetCallback<E> callback) {
+	public void getByUuid(@NonNull String uuid, @Nullable QueryOptions options, @NonNull GetCallback<E> callback) {
 		checkNotNull(uuid);
 		checkNotNull(callback);
 
 		executeSingleCallback(callback, options,
 				() -> dbService.getByUuid(uuid, options),
-				() -> _restGetByUuid(buildRestRequestPath(), uuid, options));
-
-		// Build local query
-		// Build REST query
-
-		// Check local for entity
-		// If found, check for updates via rest
-		// If not found, get from rest
-
-		// Add to local
+				() -> restService.getByUuid(uuid, options));
 	}
 
 	@Override
@@ -112,15 +72,7 @@ public abstract class BaseDataService<E extends BaseOpenmrsObject, DS extends Ba
 
 		executeMultipleCallback(callback, options, pagingInfo,
 				() -> dbService.getAll(options, pagingInfo),
-				() -> _restGetAll(buildRestRequestPath(), options, pagingInfo));
-	}
-
-	@Override
-	public void search(@NonNull E template, @Nullable QueryOptions options, @Nullable PagingInfo pagingInfo,
-			@NonNull GetCallback<List<E>> callback) {
-		checkNotNull(template);
-		checkNotNull(callback);
-
+				() -> restService.getAll(options, pagingInfo));
 	}
 
 	@Override
@@ -130,7 +82,7 @@ public abstract class BaseDataService<E extends BaseOpenmrsObject, DS extends Ba
 
 		executeSingleCallback(callback, null,
 				() -> dbService.save(entity),
-				() -> _restCreate(buildRestRequestPath(), entity));
+				() -> restService.create(entity));
 	}
 
 	@Override
@@ -140,7 +92,7 @@ public abstract class BaseDataService<E extends BaseOpenmrsObject, DS extends Ba
 
 		executeSingleCallback(callback, null,
 				() -> dbService.save(entity),
-				() -> _restUpdate(buildRestRequestPath(), entity));
+				() -> restService.update(entity));
 	}
 
 	@Override
@@ -150,15 +102,7 @@ public abstract class BaseDataService<E extends BaseOpenmrsObject, DS extends Ba
 
 		executeVoidCallback(entity, callback, null,
 				() -> dbService.delete(entity.getUuid()),
-				() -> _restPurge(buildRestRequestPath(), entity.getUuid()));
-	}
-
-	/**
-	 * Helper method to build the rest request path.
-	 * @return The rest request path
-	 */
-	protected String buildRestRequestPath() {
-		return getRestPath() + "/" + getEntityName();
+				() -> restService.purge(entity.getUuid()));
 	}
 
 	/**

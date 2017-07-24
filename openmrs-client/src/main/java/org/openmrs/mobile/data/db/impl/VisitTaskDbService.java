@@ -14,7 +14,12 @@ import org.openmrs.mobile.models.VisitType;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class VisitTaskDbService extends BaseEntityDbService<VisitTask> implements EntityDbService<VisitTask> {
+	@Inject
+	public VisitTaskDbService() { }
+
 	@Override
 	protected ModelAdapter<VisitTask> getEntityTable() {
 		return (VisitTask_Table)FlowManager.getInstanceAdapter(VisitTask.class);

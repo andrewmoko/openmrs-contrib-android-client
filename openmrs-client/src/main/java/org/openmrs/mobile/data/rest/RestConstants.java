@@ -14,5 +14,6 @@ public class RestConstants {
 		public static final String FULL = "full";
 		public static final String DEFAULT = "default";
 		public static final String REF = "ref";
+		public static final String RECORD_INFO = "custom:(uuid,dateChanged}";
 	}
 }

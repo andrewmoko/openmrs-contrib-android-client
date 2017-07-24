@@ -66,14 +66,14 @@ public class Question extends Resource implements Serializable {
 	}
 
 	/**
-	 * @return The type
+	 * @return The subscriptionClass
 	 */
 	public String getType() {
 		return type;
 	}
 
 	/**
-	 * @param type The type
+	 * @param type The subscriptionClass
 	 */
 	public void setType(String type) {
 		this.type = type;

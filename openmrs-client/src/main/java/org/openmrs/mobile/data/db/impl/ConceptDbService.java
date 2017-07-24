@@ -14,7 +14,12 @@ import org.openmrs.mobile.models.Concept_Table;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ConceptDbService extends BaseDbService<Concept> implements DbService<Concept> {
+	@Inject
+	public ConceptDbService() { }
+
 	@Override
 	protected ModelAdapter<Concept> getEntityTable() {
 		return (Concept_Table)FlowManager.getInstanceAdapter(Concept.class);

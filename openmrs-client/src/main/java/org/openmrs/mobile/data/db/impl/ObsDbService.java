@@ -16,9 +16,13 @@ import org.openmrs.mobile.models.Observation_Table;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ObsDbService extends BaseDbService<Observation> implements DbService<Observation> {
+	@Inject
+	public ObsDbService() { }
 
 	@Override
 	protected ModelAdapter<Observation> getEntityTable() {

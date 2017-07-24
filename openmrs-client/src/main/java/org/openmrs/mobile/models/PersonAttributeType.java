@@ -129,7 +129,7 @@ public class PersonAttributeType extends BaseOpenmrsMetadata {
 
 	/**
 	 * The privilege required in order to edit this attribute If <code>editPrivilege</code> is null,
-	 * no extra permissions are required to edit this type
+	 * no extra permissions are required to edit this attribute
 	 * @param editPrivilege
 	 * @since 1.5
 	 */

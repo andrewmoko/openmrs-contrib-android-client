@@ -49,21 +49,24 @@ public class PatientListPresenter extends BasePresenter implements PatientListCo
 	public PatientListPresenter(@NonNull PatientListContract.View patientListView,
 			PatientListDataService patientListDataService,
 			PatientListContextDataService patientListContextDataService) {
+		super();
+
 		this.patientListView = patientListView;
 		this.patientListView.setPresenter(this);
 
 		if (patientListDataService == null) {
-			this.patientListDataService = new PatientListDataService();
+			this.patientListDataService = dataAccess().patientList();
 		} else {
 			this.patientListDataService = patientListDataService;
 		}
 
 		if (patientListContextDataService == null) {
-			this.patientListContextDataService = new PatientListContextDataService();
+			this.patientListContextDataService = dataAccess().patientListContext();
 		} else {
 			this.patientListContextDataService = patientListContextDataService;
 		}
 	}
+
 
 	@Override
 	public void subscribe() {
