@@ -1,5 +1,6 @@
 package org.openmrs.mobile.dagger;
 
+import org.openmrs.mobile.data.db.impl.ConceptSetDbService;
 import org.openmrs.mobile.data.impl.ConceptAnswerDataService;
 import org.openmrs.mobile.data.impl.ConceptDataService;
 import org.openmrs.mobile.data.impl.EncounterDataService;

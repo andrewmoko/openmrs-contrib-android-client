@@ -5,6 +5,8 @@ import android.util.Log;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.openmrs.mobile.data.db.DbService;
+import org.openmrs.mobile.data.db.impl.PullSubscriptionDbService;
+import org.openmrs.mobile.data.db.impl.SyncLogDbService;
 import org.openmrs.mobile.models.PullSubscription;
 import org.openmrs.mobile.models.SyncLog;
 
@@ -21,6 +23,9 @@ public class SyncService {
 	private SyncProvider syncProvider;
 	private DbService<SyncLog> syncLogDbService;
 	private DbService<PullSubscription> subscriptionDbService;
+
+	//@Inject
+	//SyncProvider syncProvider;
 
 	@Inject
 	public SyncService(SyncProvider syncProvider, DbService<SyncLog> syncLogDbService,
@@ -46,11 +51,13 @@ public class SyncService {
 	protected void push() {
 		List<SyncLog> records = syncLogDbService.getAll(null, null);
 
+		/*
 		for (SyncLog record : records) {
 			syncProvider.sync(record);
 
 			syncLogDbService.delete(record);
 		}
+		*/
 	}
 
 	/**

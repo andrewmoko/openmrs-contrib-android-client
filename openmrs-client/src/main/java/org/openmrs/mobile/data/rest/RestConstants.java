@@ -16,6 +16,11 @@ public class RestConstants {
 		public static final String FULL = "full";
 		public static final String DEFAULT = "default";
 		public static final String REF = "ref";
-		public static final String RECORD_INFO = "custom:(uuid,dateChanged}";
+
+		public static final String RECORD_INFO = "custom:(uuid,dateChanged)";
+
+		public static final String DIAGNOSIS_CONCEPT = "custom:(uuid,display,name:(uuid,display,name),conceptClass:"
+				+ "(uuid,display),retired,mappings:(uuid,display,conceptReferenceTerm:(uuid,display,code)),dateCreated,"
+				+ "dateChanged)";
 	}
 }

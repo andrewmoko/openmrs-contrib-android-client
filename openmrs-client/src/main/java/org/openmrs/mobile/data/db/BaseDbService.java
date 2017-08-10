@@ -46,7 +46,12 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 
 	@Override
 	public long getCount(QueryOptions options) {
-		return SQLite.select(count(getEntityTable().getProperty("uuid")))
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return 0;
+		}
+
+		return SQLite.select(count(tbl.getProperty("uuid")))
 				.from(getEntityClass())
 				.count();
 	}
@@ -59,10 +64,14 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 	@Override
 	public E getByUuid(@NonNull String uuid, @Nullable QueryOptions options) {
 		checkNotNull(uuid);
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return null;
+		}
 
 		E result = SQLite.select()
 				.from(getEntityClass())
-				.where(getEntityTable().getProperty("uuid").eq(uuid))
+				.where(tbl.getProperty("uuid").eq(uuid))
 				.querySingle();
 
 		if (result != null) {
@@ -75,6 +84,10 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 	@Override
 	public List<E> saveAll(@NonNull List<E> entities) {
 		checkNotNull(entities);
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return null;
+		}
 
 		for (E entity : entities) {
 			if (entity != null) {
@@ -84,7 +97,7 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 
 		FlowManager.getDatabase(AppDatabase.class).executeTransaction(
 			FastStoreModelTransaction
-				.saveBuilder(FlowManager.getModelAdapter(getEntityClass()))
+				.saveBuilder(tbl)
 				.addAll(entities)
 				.build()
 		);
@@ -101,10 +114,14 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 	@Override
 	public E save(@NonNull E entity) {
 		checkNotNull(entity);
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return null;
+		}
 
 		preSave(entity);
 
-		if (FlowManager.getModelAdapter(getEntityClass()).save(entity)) {
+		if (tbl.save(entity)) {
 			postSave(entity);
 
 			return entity;
@@ -116,11 +133,15 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 	@Override
 	public void delete(@NonNull E entity) {
 		checkNotNull(entity);
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return;
+		}
 
 		preDelete(entity);
 
 		SQLite.delete(getEntityClass())
-				.where(getEntityTable().getProperty("uuid").eq(entity.getUuid()))
+				.where(tbl.getProperty("uuid").eq(entity.getUuid()))
 				.execute();
 
 		postDelete(entity);
@@ -129,11 +150,15 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 	@Override
 	public void delete(@NonNull String uuid) {
 		checkNotNull(uuid);
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return;
+		}
 
 		preDelete(uuid);
 
 		SQLite.delete(getEntityClass())
-				.where(getEntityTable().getProperty("uuid").eq(uuid))
+				.where(tbl.getProperty("uuid").eq(uuid))
 				.execute();
 
 		postDelete(uuid);
@@ -141,6 +166,11 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 
 	@Override
 	public void deleteAll() {
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return;
+		}
+
 		preDeleteAll();
 
 		SQLite.delete(getEntityClass())
@@ -164,6 +194,10 @@ public abstract class BaseDbService<E extends BaseOpenmrsObject> implements DbSe
 	protected <M> List<M> executeQuery(@Nullable QueryOptions options, @Nullable PagingInfo pagingInfo,
 			@NonNull Class<M> cls, @Nullable Consumer<From<M>> where) {
 		checkNotNull(cls);
+		ModelAdapter<E> tbl = getEntityTable();
+		if (tbl == null) {
+			return null;
+		}
 
 		// Set up basic select query
 		From<M> from = SQLite.select().from(cls);

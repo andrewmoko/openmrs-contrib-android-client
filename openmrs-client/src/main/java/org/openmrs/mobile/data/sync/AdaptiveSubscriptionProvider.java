@@ -25,15 +25,16 @@ import javax.inject.Inject;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public abstract class AdaptiveSubscriptionProvider<E extends BaseOpenmrsAuditableObject> extends BaseSubscriptionProvider {
+public abstract class AdaptiveSubscriptionProvider<E extends BaseOpenmrsAuditableObject,
+		DS extends DbService<E>, RS extends RestService<E>> extends BaseSubscriptionProvider {
 	@Inject
-	protected DbService<E> dbService;
+	protected DS dbService;
 
 	@Inject
 	protected DbService<RecordInfo> recordInfoDbService;
 
 	@Inject
-	protected RestService<E> restService;
+	protected RS restService;
 
 	private Class<E> entityClass;
 
@@ -56,15 +57,17 @@ public abstract class AdaptiveSubscriptionProvider<E extends BaseOpenmrsAuditabl
 		// Filter the list for records updated since the last sync
 		List<E> updated = new ArrayList<>();
 		if (subscription.getLastSync() != null) {
-			table.stream().filter(
-					record -> record.getDateChanged().compareTo(subscription.getLastSync()) > 0
-			).forEach(updated::add);
+			for (E record : table) {
+				if (record.getDateChanged().compareTo(subscription.getLastSync()) > 0) {
+					updated.add(record);
+				}
+			}
 		} else {
 			updated = table;
 		}
 
 		// Update/Create local records
-		dbService.saveAll(updated);
+		saveAllDb(updated);
 	}
 
 	protected void pullIncremental(PullSubscription subscription) {
@@ -95,8 +98,13 @@ public abstract class AdaptiveSubscriptionProvider<E extends BaseOpenmrsAuditabl
 			pullTable(subscription);
 		} else {
 			// Else pull each record via rest and save to the local db
-			processIncremental(updates);
-			processIncremental(inserts);
+			if (updates != null && updates.size() > 0) {
+				processIncremental(updates);
+			}
+
+			if (inserts != null && inserts.size() > 0) {
+				processIncremental(inserts);
+			}
 		}
 	}
 
@@ -141,7 +149,7 @@ public abstract class AdaptiveSubscriptionProvider<E extends BaseOpenmrsAuditabl
 		}
 
 		// Save the entities to the db
-		dbService.saveAll(entities);
+		saveAllDb(entities);
 	}
 
 	protected long getRecordCountDb() {
@@ -152,12 +160,16 @@ public abstract class AdaptiveSubscriptionProvider<E extends BaseOpenmrsAuditabl
 		return getCallListValue(restService.getAll(null, null));
 	}
 
+	protected void saveAllDb(List<E> entities) {
+		dbService.saveAll(entities);
+	}
+
 	protected E getByUuidRest(String uuid) {
 		return getCallValue(restService.getByUuid(uuid, null));
 	}
 
 	protected List<RecordInfo> getRecordInfoRest() {
-		return getCallListValue(restService.getRecordInfo());
+		return getCallListValue(restService.getRecordInfo(null));
 	}
 
 	protected <T> List<T> getCallListValue(Call<Results<T>> call) {

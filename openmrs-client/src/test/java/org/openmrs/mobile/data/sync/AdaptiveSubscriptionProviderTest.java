@@ -32,7 +32,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AdaptiveSubscriptionProviderTest<E extends BaseOpenmrsAuditableObject,
-		P extends AdaptiveSubscriptionProvider<E>> {
+		DS extends DbService<E>, RS extends RestService<E>,
+		P extends AdaptiveSubscriptionProvider<E, DS, RS>> {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 

@@ -15,15 +15,16 @@ import java.util.List;
 public class CustomDiagnosesDropdownAdapter extends ArrayAdapter<Concept> {
 	public CustomDiagnosesDropdownAdapter(Context context, int resource, List<Concept> conceptSearchResult) {
 		super(context, resource, conceptSearchResult);
+
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Concept conceptSearchResult = getItem(position);
+		Concept diagnosisSearchResult = getItem(position);
 		LayoutInflater inflater = LayoutInflater.from(getContext());
 		View item = inflater.inflate(R.layout.custom_dropdown_item, parent, false);
 		TextView label = (TextView)item.findViewById(R.id.textView);
-		label.setText(conceptSearchResult.toString());
+		label.setText(diagnosisSearchResult.toString());
 		return item;
 	}
 

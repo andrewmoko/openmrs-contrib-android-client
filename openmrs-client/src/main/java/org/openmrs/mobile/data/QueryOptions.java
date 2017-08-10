@@ -3,6 +3,7 @@ package org.openmrs.mobile.data;
 import android.support.annotation.Nullable;
 
 import org.openmrs.mobile.data.rest.RestConstants;
+import org.openmrs.mobile.utilities.StringUtils;
 
 public class QueryOptions {
 	private static final boolean DEFAULT_INCLUDE_INACTIVE = false;
@@ -15,6 +16,7 @@ public class QueryOptions {
 	private String cacheKey;
 	private boolean includeInactive = DEFAULT_INCLUDE_INACTIVE;
 	private boolean loadRelatedObjects = DEFAULT_LOAD_RELATED_OBJECTS;
+	private String customRepresentation;
 
 	public QueryOptions() {
 		this(DEFAULT_INCLUDE_INACTIVE, DEFAULT_LOAD_RELATED_OBJECTS);
@@ -43,7 +45,18 @@ public class QueryOptions {
 	}
 
 	public static String getRepresentation(@Nullable QueryOptions options) {
-		return getLoadRelatedObjects(options) ? RestConstants.Representations.FULL : RestConstants.Representations.DEFAULT;
+		String result;
+		if (getLoadRelatedObjects(options)) {
+			result = RestConstants.Representations.FULL;
+		} else {
+			if (options != null && StringUtils.notEmpty(options.getCustomRepresentation())) {
+				result = options.getCustomRepresentation();
+			} else {
+				result = RestConstants.Representations.DEFAULT;
+			}
+		}
+
+		return result;
 	}
 
 	public String getCacheKey() {
@@ -68,5 +81,13 @@ public class QueryOptions {
 
 	public void setLoadRelatedObjects(boolean loadRelatedObjects) {
 		this.loadRelatedObjects = loadRelatedObjects;
+	}
+
+	public String getCustomRepresentation() {
+		return customRepresentation;
+	}
+
+	public void setCustomRepresentation(String customRepresentation) {
+		this.customRepresentation = customRepresentation;
 	}
 }
