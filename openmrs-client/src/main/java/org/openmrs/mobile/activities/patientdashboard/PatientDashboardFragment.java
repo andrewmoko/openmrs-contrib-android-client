@@ -57,13 +57,17 @@ public class PatientDashboardFragment extends BaseDiagnosisFragment<PatientDashb
 	private OpenMRS instance = OpenMRS.getInstance();
 	private Intent intent;
 	private Location location;
-	private RelativeLayout dashboardScreen;
+	private RelativeLayout dashboardScreen, noPatientDataLayout;
 	private ProgressBar dashboardProgressBar;
-	private TextView noVisitNoteLabel;
+	private TextView noVisitNoteLabel, noPatientDataLabel;
 	private String patientUuid;
 	private PatientVisitsRecyclerAdapter patientVisitsRecyclerAdapter;
 	private FloatingActionMenu patientDashboardMenu;
 	private RecyclerView patientVisitsRecyclerView;
+
+	public static PatientDashboardFragment newInstance() {
+		return new PatientDashboardFragment();
+	}
 
 	@Override
 	public void onDestroyView() {
@@ -98,10 +102,6 @@ public class PatientDashboardFragment extends BaseDiagnosisFragment<PatientDashb
 				}
 			}
 		});
-	}
-
-	public static PatientDashboardFragment newInstance() {
-		return new PatientDashboardFragment();
 	}
 
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -188,6 +188,8 @@ public class PatientDashboardFragment extends BaseDiagnosisFragment<PatientDashb
 		patientDashboardMenu = (FloatingActionMenu)fragmentView.findViewById(R.id.patientDashboardMenu);
 		patientDashboardMenu.setClosedOnTouchOutside(true);
 		patientVisitsRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.patientVisitsRecyclerView);
+		noPatientDataLabel = (TextView)fragmentView.findViewById(R.id.noPatientDataLabel);
+		noPatientDataLayout = (RelativeLayout)fragmentView.findViewById(R.id.noPatientDataLayout);
 	}
 
 	@Override
@@ -277,6 +279,13 @@ public class PatientDashboardFragment extends BaseDiagnosisFragment<PatientDashb
 	@Override
 	public void updateClinicVisitNote(Observation observation, String encounterUuid) {
 		patientVisitsRecyclerAdapter.updateClinicalNoteObs(observation, encounterUuid);
+	}
+
+	@Override
+	public void showNoPatientData(boolean visible) {
+		noPatientDataLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+		dashboardProgressBar.setVisibility(visible ? View.GONE : View.VISIBLE);
+		dashboardScreen.setVisibility(visible ? View.GONE : View.VISIBLE);
 	}
 
 	@Override

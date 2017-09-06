@@ -1251,8 +1251,8 @@ public class AuditDataFragment extends ACBaseFragment<AuditDataContract.Presente
 	private boolean hasValidGcsScore(){
 		if(firstGcsScore.getText().toString().length() == 0){
 			errorFirstGcsScore.setVisibility(View.GONE);
-		}else if(Integer.parseInt(firstGcsScore.getText().toString()) > 2 &&
-				Integer.parseInt(firstGcsScore.getText().toString()) < 16){
+		}else if(Float.parseFloat(firstGcsScore.getText().toString()) > 2 &&
+				Float.parseFloat(firstGcsScore.getText().toString()) < 16){
 			errorFirstGcsScore.setVisibility(View.GONE);
 			return true;
 		}else{

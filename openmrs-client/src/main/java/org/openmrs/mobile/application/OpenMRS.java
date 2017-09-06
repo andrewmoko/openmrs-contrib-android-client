@@ -32,6 +32,7 @@ import org.openmrs.mobile.dagger.DaggerApplicationComponent;
 import org.openmrs.mobile.dagger.SyncModule;
 import org.openmrs.mobile.net.AuthorizationManager;
 import org.openmrs.mobile.data.DatabaseHelper;
+import org.openmrs.mobile.net.NetworkManager;
 import org.openmrs.mobile.security.SecretKeyGenerator;
 import org.openmrs.mobile.sync.SyncManager;
 import org.openmrs.mobile.utilities.ApplicationConstants;
@@ -62,6 +63,7 @@ public class OpenMRS extends Application {
 	private SyncManager syncManager;
 	private NetworkUtils networkUtils;
 	private DatabaseHelper databaseHelper;
+	private NetworkManager networkManager;
 	private EventBus eventBus;
 
 	@Override
@@ -93,6 +95,7 @@ public class OpenMRS extends Application {
 		mLogger = new OpenMRSLogger();
 
 		syncManager.initializeDataSync();
+		networkManager.initializeNetworkReceiver();
 	}
 
 	private void injectDependencies() {
@@ -104,6 +107,7 @@ public class OpenMRS extends Application {
 		networkUtils = applicationComponent.networkUtils();
 		authorizationManager = applicationComponent.authorizationManager();
 		databaseHelper = applicationComponent.databaseHelper();
+		networkManager = applicationComponent.networkManager();
 		eventBus = applicationComponent.eventBus();
 	}
 

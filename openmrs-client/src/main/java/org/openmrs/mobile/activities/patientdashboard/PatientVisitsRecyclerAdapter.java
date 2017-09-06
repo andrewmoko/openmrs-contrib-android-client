@@ -229,7 +229,7 @@ public class PatientVisitsRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
 			baseDiagnosisFragment.setClinicalNoteView(
 					(TextInputEditText)view.findViewById(R.id.editClinicalNote));
 			baseDiagnosisFragment.setLoadingProgressBar((RelativeLayout)view.findViewById(R.id.loadingDiagnoses));
-			baseDiagnosisFragment.setDiagnosesContent((LinearLayout) view.findViewById(R.id.diagnosesContent));
+			baseDiagnosisFragment.setDiagnosesContent((LinearLayout)view.findViewById(R.id.diagnosesContent));
 
 			primaryDiagnosisLayoutManager = new LinearLayoutManager(context);
 			secondaryDiagnosisLayoutManager = new LinearLayoutManager(context);

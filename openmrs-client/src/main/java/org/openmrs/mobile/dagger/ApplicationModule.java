@@ -1,13 +1,15 @@
 package org.openmrs.mobile.dagger;
 
+import org.openmrs.mobile.application.OpenMRS;
+import org.openmrs.mobile.net.AuthorizationManager;
+import org.openmrs.mobile.net.NetworkManager;
+import org.openmrs.mobile.sync.SyncManager;
+
 import javax.inject.Singleton;
 
 import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
-import org.openmrs.mobile.application.OpenMRS;
-import org.openmrs.mobile.net.AuthorizationManager;
-import org.openmrs.mobile.sync.SyncManager;
 
 @Module
 public class ApplicationModule {
@@ -43,5 +45,11 @@ public class ApplicationModule {
 	@Singleton
 	public AuthorizationManager provideAuthorizationManager() {
 		return new AuthorizationManager(openMRS);
+	}
+
+	@Provides
+	@Singleton
+	public NetworkManager provideNetworkManager() {
+		return new NetworkManager(openMRS, DaggerReceiverComponent.create());
 	}
 }
