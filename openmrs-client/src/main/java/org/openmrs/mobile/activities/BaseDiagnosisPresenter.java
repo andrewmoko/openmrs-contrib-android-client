@@ -11,6 +11,7 @@ import org.openmrs.mobile.data.QueryOptions;
 import org.openmrs.mobile.data.impl.ConceptDataService;
 import org.openmrs.mobile.data.impl.ObsDataService;
 import org.openmrs.mobile.data.impl.VisitNoteDataService;
+import org.openmrs.mobile.data.rest.RestConstants;
 import org.openmrs.mobile.models.Concept;
 import org.openmrs.mobile.models.Encounter;
 import org.openmrs.mobile.models.Observation;
@@ -39,8 +40,9 @@ public class BaseDiagnosisPresenter {
 
 	public void findConcept(String searchQuery, IBaseDiagnosisFragment base) {
 		PagingInfo pagingInfo = new PagingInfo(page, limit);
-		conceptDataService.findConcept(searchQuery, new QueryOptions.Builder().build(), pagingInfo, new DataService
-				.GetCallback<List<Concept>>() {
+		conceptDataService.findConcept(searchQuery,
+				new QueryOptions.Builder().customRepresentation(RestConstants.Representations.DIAGNOSIS_CONCEPT).build(),
+				pagingInfo, new DataService.GetCallback<List<Concept>>() {
 
 			@Override
 			public void onCompleted(List<Concept> entities) {

@@ -20,7 +20,7 @@ public class RestConstants {
 
 		public static final String DIAGNOSIS_CONCEPT = "custom:(uuid,display,name:(uuid,display,name),conceptClass:"
 				+ "(uuid,display),retired,mappings:(uuid,display,conceptReferenceTerm:(uuid,display,code)),dateCreated,"
-				+ "dateChanged)";
+				+ "dateChanged,value)";
 		public static final String PATIENT_LIST_PATIENTS = "custom:(uuid,patient:(uuid,dateChanged),patientList:(uuid,"
 				+ "display))";
 		public static final String VISIT_ENCOUNTER = "custom:(uuid,display,encounterDatetime,patient:ref,location:ref,"
