@@ -83,8 +83,6 @@ public interface VisitContract {
 	interface VisitPhotoView extends ViewVisitDetailsMain {
 		void updateVisitImageMetadata(List<VisitPhoto> visitPhotos);
 
-		void downloadImage(String obsUuid, DataService.GetCallback<byte[]> callback);
-
 		void deleteImage(VisitPhoto visitPhoto);
 
 		void refresh();
@@ -118,8 +116,6 @@ public interface VisitContract {
 	}
 
 	interface VisitPhotoPresenter extends VisitDetailsMainPresenter {
-		void downloadImage(String obsUuid, DataService.GetCallback<byte[]> callback);
-
 		boolean isLoading();
 
 		void setLoading(boolean loading);

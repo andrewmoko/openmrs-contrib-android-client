@@ -50,7 +50,6 @@ import android.widget.TextView;
 import org.openmrs.mobile.R;
 import org.openmrs.mobile.activities.visit.VisitContract;
 import org.openmrs.mobile.activities.visit.VisitFragment;
-import org.openmrs.mobile.data.DataService;
 import org.openmrs.mobile.models.VisitPhoto;
 import org.openmrs.mobile.utilities.ApplicationConstants;
 import org.openmrs.mobile.utilities.StringUtils;
@@ -63,9 +62,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -143,11 +139,6 @@ public class VisitPhotoFragment extends VisitFragment implements VisitContract.V
 
 		RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), visitPhotos.size());
 		recyclerView.setLayoutManager(layoutManager);
-	}
-
-	@Override
-	public void downloadImage(String obsUuid, DataService.GetCallback<byte[]> callback) {
-		((VisitPhotoPresenter)mPresenter).downloadImage(obsUuid, callback);
 	}
 
 	@Override

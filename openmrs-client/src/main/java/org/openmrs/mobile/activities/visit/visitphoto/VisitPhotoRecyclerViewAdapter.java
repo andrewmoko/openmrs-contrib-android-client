@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import org.openmrs.mobile.R;
 import org.openmrs.mobile.activities.visit.VisitContract;
-import org.openmrs.mobile.data.DataService;
 import org.openmrs.mobile.models.VisitPhoto;
 import org.openmrs.mobile.utilities.DateUtils;
 
@@ -67,20 +66,10 @@ public class VisitPhotoRecyclerViewAdapter
 			return;
 		}
 
-		view.downloadImage(visitPhoto.getObservation().getUuid(), new DataService.GetCallback<byte[]>() {
-			@Override
-			public void onCompleted(byte[] entity) {
-				visitPhoto.setImage(entity);
-				holder.image.setImageBitmap(BitmapFactory.decodeByteArray(entity, 0, entity.length));
-				holder.image.invalidate();
-				map.put(holder.image, visitPhoto);
-			}
-
-			@Override
-			public void onError(Throwable t) {
-				holder.image.setVisibility(View.GONE);
-			}
-		});
+		byte[] photoBytes = visitPhoto.getImageColumn().getBlob();
+		holder.image.setImageBitmap(BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length));
+		holder.image.invalidate();
+		map.put(holder.image, visitPhoto);
 
 		holder.image.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -98,7 +87,8 @@ public class VisitPhotoRecyclerViewAdapter
 					expandImage.setLayoutParams(layoutParams);
 					expandImage.setImageBitmap(
 							BitmapFactory.decodeByteArray(
-									visitPhoto.getImageColumn().getBlob(), 0, visitPhoto.getImageColumn().getBlob().length));
+									visitPhoto.getImageColumn().getBlob(), 0, visitPhoto.getImageColumn().getBlob()
+											.length));
 
 					TextView descriptionView = new TextView(context);
 					descriptionView.setText(view.formatVisitImageDescription(visitPhoto.getFileCaption(),
