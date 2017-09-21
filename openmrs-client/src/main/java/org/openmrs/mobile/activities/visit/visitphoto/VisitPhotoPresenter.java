@@ -61,33 +61,35 @@ public class VisitPhotoPresenter extends VisitPresenterImpl implements VisitCont
 					@Override
 					public void onCompleted(List<Observation> observations) {
 						List<VisitPhoto> visitPhotos = new ArrayList<>();
-						for (Observation observation : observations) {
-							VisitPhoto visitPhoto = new VisitPhoto();
-							visitPhoto.setFileCaption(observation.getComment());
-							visitPhoto.setDateCreated(new Date(DateUtils.convertTime(observation.getObsDatetime())));
+						if (observations != null) {
+							for (Observation observation : observations) {
+								VisitPhoto visitPhoto = new VisitPhoto();
+								visitPhoto.setFileCaption(observation.getComment());
+								visitPhoto.setDateCreated(new Date(DateUtils.convertTime(observation.getObsDatetime())));
 
-							visitPhoto.setCreator(observation.getCreator());
+								visitPhoto.setCreator(observation.getCreator());
 
-							visitPhoto.setObservation(observation);
+								visitPhoto.setObservation(observation);
 
-							// download photo bytes
-							visitPhotoDataService.downloadPhotoImage(visitPhoto, ApplicationConstants.THUMBNAIL_VIEW,
-									new DataService.GetCallback<VisitPhoto>() {
-										@Override
-										public void onCompleted(VisitPhoto entity) {
-											visitPhoto.setImage(entity.getImageColumn().getBlob());
-											visitPhotos.add(visitPhoto);
-											visitPhotoView.showTabSpinner(false);
+								// download photo bytes
+								visitPhotoDataService.downloadPhotoImage(visitPhoto, ApplicationConstants.THUMBNAIL_VIEW,
+										new DataService.GetCallback<VisitPhoto>() {
+											@Override
+											public void onCompleted(VisitPhoto entity) {
+												visitPhoto.setImage(entity.getImageColumn().getBlob());
+												visitPhotos.add(visitPhoto);
+												visitPhotoView.showTabSpinner(false);
 
-											visitPhotoView.updateVisitImageMetadata(visitPhotos);
-										}
+												visitPhotoView.updateVisitImageMetadata(visitPhotos);
+											}
 
-										@Override
-										public void onError(Throwable t) {
-											visitPhotoView.showTabSpinner(false);
-											ToastUtil.error(t.getMessage());
-										}
-									});
+											@Override
+											public void onError(Throwable t) {
+												visitPhotoView.showTabSpinner(false);
+												ToastUtil.error(t.getMessage());
+											}
+										});
+							}
 						}
 
 						visitPhotoView.showTabSpinner(false);

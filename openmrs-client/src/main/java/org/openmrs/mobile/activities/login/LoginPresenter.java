@@ -178,11 +178,13 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Prese
 		DataService.GetCallback<User> fetchUserCallback = new DataService.GetCallback<User>() {
 			@Override
 			public void onCompleted(User user) {
-				Map<String, String> userInfo = new HashMap<>();
-				userInfo.put(ApplicationConstants.UserKeys.USER_PERSON_NAME, user.getPerson().getDisplay());
-				userInfo.put(ApplicationConstants.UserKeys.USER_UUID, user.getPerson().getUuid());
-				openMRS.setCurrentUserInformation(userInfo);
-				openMRS.setLoginUserUuid(ApplicationConstants.EMPTY_STRING);
+				if(user != null) {
+					Map<String, String> userInfo = new HashMap<>();
+					userInfo.put(ApplicationConstants.UserKeys.USER_PERSON_NAME, user.getPerson().getDisplay());
+					userInfo.put(ApplicationConstants.UserKeys.USER_UUID, user.getPerson().getUuid());
+					openMRS.setCurrentUserInformation(userInfo);
+					openMRS.setLoginUserUuid(ApplicationConstants.EMPTY_STRING);
+				}
 			}
 
 			@Override
