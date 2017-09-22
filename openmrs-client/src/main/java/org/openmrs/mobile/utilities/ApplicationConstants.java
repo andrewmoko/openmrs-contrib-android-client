@@ -118,6 +118,34 @@ public abstract class ApplicationConstants {
 	}
 
 	public abstract static class ObservationLocators {
+		public static final String YES = "Yes";
+		public static final String NO = "No";
+		public static final String UNKNOWN = "Unknown";
+		public static final String AUDIT_DATA_COMPLETE = "Audit Data Complete: ";
+		public static final String TYPE_OF_INPATIENT_SERVICE = "Type of inpatient service: ";
+		public static final String HOSPITAL_DEATH = "Hospital Death: ";
+		public static final String PALLIATIVE_CARE_CONSULT = "Palliative Care consult?: ";
+		public static final String HIV_INFECTED = "HIV INFECTED: ";
+		public static final String WARD_STAY_DURING_ADMISSION = "Ward stay during admission: ";
+		public static final String PREOP_RISK_ASSESSMENT = "PRE-OP Risk Assessment Only: ";
+		public static final String ICU_STAY_DURING_ADMISSION = "ICU stay during admission: ";
+		public static final String HDU_STAY_DURING_ADMISSION = "HDU stay during admission: ";
+		public static final String GLYCOSYLATED_HEMOGLOBIN = "glycosylated hemoglobin A measurement: ";
+		public static final String HDU_COMGMT = "HDU CO-MGMT Only: ";
+		public static final String FIRST_MAP = "1st MAP in ICU <= 65?: ";
+		public static final String FIRST_SBP_ICU = "1st SBP in ICU <= 90?: ";
+		public static final String FIRST_GCS_SCORE = "1st GCS score at ICU admission (#): ";
+		public static final String FIRST_HEART_RATE = "1st heart rate in ICU: ";
+		public static final String MECHANICAL_VENTILATION = "Mechanical ventilation: ";
+		public static final String PATIENT_DIABETIC = "Patient diabetic?: ";
+		public static final String RECEIVED_VAOSPRESSORS = "Received vaospressors during hospital stay?: ";
+		public static final String SURGERY_DURING_HOSPITAL_STAY = "Surgery during hospital stay: ";
+		public static final String INFECTION_CONFIRMED_SUSPECTED = "Suspected or confirmed infection within 24 hours of ICU admission (e.g Abx ordered): ";
+		public static final String SEDETION_PRIOR_FIRST_GCS_SCORE_ICU =
+				"had patient received any sedation prior to 1st GCS score at ICU admission?: ";
+
+
+
 		public static final String CLINICAL_NOTE = "Text of encounter note: ";
 		public static final String DIAGNOSES = "Visit Diagnoses";
 		public static final String PRIMARY_DIAGNOSIS = "Primary";

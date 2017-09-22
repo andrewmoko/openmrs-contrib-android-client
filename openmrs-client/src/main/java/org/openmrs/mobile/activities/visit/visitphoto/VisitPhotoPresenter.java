@@ -76,11 +76,13 @@ public class VisitPhotoPresenter extends VisitPresenterImpl implements VisitCont
 										new DataService.GetCallback<VisitPhoto>() {
 											@Override
 											public void onCompleted(VisitPhoto entity) {
-												visitPhoto.setImage(entity.getImageColumn().getBlob());
-												visitPhotos.add(visitPhoto);
-												visitPhotoView.showTabSpinner(false);
+												if(entity != null) {
+													visitPhoto.setImage(entity.getImageColumn().getBlob());
+													visitPhotos.add(visitPhoto);
+													visitPhotoView.showTabSpinner(false);
 
-												visitPhotoView.updateVisitImageMetadata(visitPhotos);
+													visitPhotoView.updateVisitImageMetadata(visitPhotos);
+												}
 											}
 
 											@Override

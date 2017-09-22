@@ -146,6 +146,7 @@ public class ResourceSerializer implements JsonSerializer<Resource> {
 	private void isLocalUuid(Resource src) {
 		if (Resource.isLocalUuid(src.getUuid()) && OpenMRS.getInstance().getNetworkUtils().hasNetwork()) {
 			src.setUuid(null);
+			src.setDisplay(null);
 		}
 	}
 }
