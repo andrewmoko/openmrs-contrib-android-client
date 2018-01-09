@@ -435,6 +435,10 @@ public class OpenMRS extends Application {
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 	}
 
+	public boolean isRunningLollipopVersionOrHigher() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+	}
+
 	private void initializeSQLCipher() {
 		SQLiteDatabase.loadLibs(this);
 	}

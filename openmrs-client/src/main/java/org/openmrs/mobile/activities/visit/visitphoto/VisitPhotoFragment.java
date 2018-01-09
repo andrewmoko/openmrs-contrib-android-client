@@ -18,6 +18,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -30,8 +32,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
@@ -44,7 +46,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,6 +54,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.openmrs.mobile.R;
 import org.openmrs.mobile.activities.ACBaseFragment;
 import org.openmrs.mobile.activities.visit.VisitContract;
+import org.openmrs.mobile.application.OpenMRS;
 import org.openmrs.mobile.event.VisitDashboardDataRefreshEvent;
 import org.openmrs.mobile.models.VisitPhoto;
 import org.openmrs.mobile.utilities.ApplicationConstants;
@@ -86,7 +88,7 @@ public class VisitPhotoFragment extends ACBaseFragment<VisitContract.VisitDashbo
 	private Bitmap visitPhoto = null;
 	private AppCompatButton uploadVisitPhotoButton;
 	private RelativeLayout visitPhotoProgressBar;
-	private SwipeRefreshLayout visitPhotoTab;
+	private SwipeRefreshLayout visitPhotoSwipeRefreshLayout;
 
 	private File output;
 	private EditText fileCaption;
@@ -122,10 +124,10 @@ public class VisitPhotoFragment extends ACBaseFragment<VisitContract.VisitDashbo
 		noVisitImage = (TextView)root.findViewById(R.id.noVisitImage);
 
 		visitPhotoProgressBar = (RelativeLayout)root.findViewById(R.id.visitPhotoProgressBar);
-		visitPhotoTab = (SwipeRefreshLayout)root.findViewById(R.id.visitPhotoTab);
+		visitPhotoSwipeRefreshLayout = (SwipeRefreshLayout)root.findViewById(R.id.visitPhotoTab);
 
 		// Disabling swipe refresh on this fragment due to issues
-		visitPhotoTab.setEnabled(false);
+		visitPhotoSwipeRefreshLayout.setEnabled(false);
 
 		addListeners();
 
@@ -172,26 +174,62 @@ public class VisitPhotoFragment extends ACBaseFragment<VisitContract.VisitDashbo
 	@Override
 	public void showTabSpinner(boolean visibility) {
 		if (visibility) {
-			visitPhotoTab.setVisibility(View.GONE);
+			visitPhotoSwipeRefreshLayout.setVisibility(View.GONE);
 			visitPhotoProgressBar.setVisibility(View.VISIBLE);
 		} else {
-			visitPhotoTab.setVisibility(View.VISIBLE);
+			visitPhotoSwipeRefreshLayout.setVisibility(View.VISIBLE);
 			visitPhotoProgressBar.setVisibility(View.GONE);
 		}
 	}
 
-	@NeedsPermission({ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE })
+	@NeedsPermission(Manifest.permission.CAMERA)
 	public void capturePhoto() {
+		VisitPhotoFragmentPermissionsDispatcher.externalStorageWithCheck(VisitPhotoFragment.this);
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-			File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+		Context context = getContext();
+		if (context != null && takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+			OpenMRS openMRS = OpenMRS.getInstance();
+			File dir = openMRS.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 			output = new File(dir, getUniqueImageFileName());
-			takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(output));
-			startActivityForResult(takePictureIntent, IMAGE_REQUEST);
+			if (output != null) {
+				Uri photoURI = FileProvider.getUriForFile(openMRS, ApplicationConstants.Authorities.FILE_PROVIDER, output);
+				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+				grantUriPermissions(context, takePictureIntent, photoURI);
+				startActivityForResult(takePictureIntent, IMAGE_REQUEST);
+			} else {
+				createSnackbar(getString(R.string.external_storage_not_available));
+			}
 		}
 	}
 
-	@OnShowRationale({ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE })
+	private void grantUriPermissions(Context context, Intent takePictureIntent, Uri photoURI) {
+		if (OpenMRS.getInstance().isRunningLollipopVersionOrHigher()) {
+			takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		} else {
+			List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(takePictureIntent,
+					PackageManager.MATCH_DEFAULT_ONLY);
+			for (ResolveInfo resolveInfo : resInfoList) {
+				String packageName = resolveInfo.activityInfo.packageName;
+				context.grantUriPermission(packageName, photoURI,
+						Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			}
+		}
+	}
+
+	@NeedsPermission(value = Manifest.permission.WRITE_EXTERNAL_STORAGE, maxSdkVersion = 18)
+	public void externalStorage() { }
+
+	@OnPermissionDenied(value = Manifest.permission.WRITE_EXTERNAL_STORAGE)
+	public void showDeniedForWritingToExternalStorage() {
+		createSnackbar(getString(R.string.permission_write_external_storage_denied));
+	}
+
+	@OnNeverAskAgain(value = Manifest.permission.WRITE_EXTERNAL_STORAGE)
+	public void showNeverAskForWritingToExternalStorage() {
+		createSnackbar(getString(R.string.permission_write_external_storage_denied));
+	}
+
+	@OnShowRationale(Manifest.permission.CAMERA)
 	public void showRationaleForCamera(final PermissionRequest request) {
 		new AlertDialog.Builder(getActivity())
 				.setMessage(R.string.permission_camera_rationale)
@@ -200,31 +238,20 @@ public class VisitPhotoFragment extends ACBaseFragment<VisitContract.VisitDashbo
 				.show();
 	}
 
-	@OnPermissionDenied({ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE })
+	@OnPermissionDenied(Manifest.permission.CAMERA)
 	public void showDeniedForCamera() {
-		createSnackbarLong(R.string.permission_camera_denied)
-				.show();
+		createSnackbar(getString(R.string.permission_camera_denied));
 	}
 
-	@OnNeverAskAgain({ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE })
+	@OnNeverAskAgain(Manifest.permission.CAMERA)
 	public void showNeverAskForCamera() {
-		createSnackbarLong(R.string.permission_camera_neverask)
-				.show();
+		createSnackbar(getString(R.string.permission_camera_neverask));
 	}
 
 	private String getUniqueImageFileName() {
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		return timeStamp + "_" + ".jpg";
-	}
-
-	private Snackbar createSnackbarLong(int stringId) {
-		//Snackbar snackbar = Snackbar.make(linearLayout, stringId, Snackbar.LENGTH_LONG);
-		//View sbView = snackbar.getView();
-		//TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-		//textView.setTextColor(Color.WHITE);
-		//return snackbar;
-		return null;
 	}
 
 	private Bitmap getPortraitImage(String imagePath) {
