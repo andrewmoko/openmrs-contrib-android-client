@@ -362,4 +362,11 @@ public final class DateUtils {
 		return cal.getTime();
 	}
 
+	public static boolean patientSeenWithinTheLastHour(Date lastDateseen) {
+		Calendar cal = Calendar.getInstance();
+		int lastHour = cal.get(Calendar.HOUR) - 1;
+		cal.set(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, lastHour, Calendar.MINUTE);
+
+		return cal.before(lastDateseen);
+	}
 }

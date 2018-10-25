@@ -82,4 +82,9 @@ public class PatientDataService extends BaseDataService<Patient, PatientDbServic
 	public void saveLastSyncTime(Patient patient, Date lastSync) {
 		entitySyncInfoDbService.saveLastSyncInfo(patient, lastSync);
 	}
+
+	public Patient updateLastDatetimeSeen(Patient patient) {
+		patient.setLastDatetimeSeen(new Date());
+		return dbService.save(patient);
+	}
 }

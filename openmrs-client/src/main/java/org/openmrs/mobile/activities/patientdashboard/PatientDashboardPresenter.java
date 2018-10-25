@@ -106,6 +106,10 @@ public class PatientDashboardPresenter extends BasePresenter implements PatientD
 					patientDashboardView.navigateBack();
 					return;
 				}
+
+				// and-409: Update when this patient was last seen.
+				patient = patientDataService.updateLastDatetimeSeen(patient);
+
 				setPatient(patient);
 				fetchVisits(patient, INITIAL_PAGING_INDEX, forceRefresh);
 			}

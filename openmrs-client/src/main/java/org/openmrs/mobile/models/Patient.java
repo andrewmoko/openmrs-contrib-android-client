@@ -22,6 +22,7 @@ import org.openmrs.mobile.utilities.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,10 @@ public class Patient extends BaseOpenmrsAuditableObject implements Serializable 
 	@Expose
 	@Column
 	private String resourceVersion;
+
+	@SerializedName("lastDatetimeSeen")
+	@Column
+	private Date lastDatetimeSeen;
 
 	@OneToMany(methods = { OneToMany.Method.ALL }, variableName = "identifiers")
 	List<PatientIdentifier> loadIdentifiers() {
@@ -174,5 +179,13 @@ public class Patient extends BaseOpenmrsAuditableObject implements Serializable 
 		if (StringUtils.notNull(value)) {
 			map.put(key, value);
 		}
+	}
+
+	public Date getLastDatetimeSeen() {
+		return lastDatetimeSeen;
+	}
+
+	public void setLastDatetimeSeen(Date lastDatetimeSeen) {
+		this.lastDatetimeSeen = lastDatetimeSeen;
 	}
 }
